@@ -1,71 +1,1493 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  SITO WEB - ENI GAS E LUCE | SOSTENIBILITÀ
+  ============================================================
+  Progetto: Project Work sulla Sostenibilità
+  Azienda: ENI Gas e Luce
+  Tecnologie: HTML5, CSS3, JavaScript (vanilla)
+  
+  STRUTTURA DEL FILE:
+  1. <head>       → Meta tag, Google Fonts, stili CSS
+  2. <header>     → Barra di navigazione in cima alla pagina
+  3. #hero        → Sezione di benvenuto con immagine di sfondo
+  4. #pillars     → I 3 pilastri della sostenibilità ENI
+  5. #attivita    → Le attività concrete di sostenibilità
+  6. #numeri      → I numeri chiave (contatori animati)
+  7. #report      → Download dei report di sostenibilità
+  8. #footer      → Piè di pagina con contatti e link
+  ============================================================
+-->
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<title>Sostenibilità ENI — Attività e Report</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="reportfinanziario.css">
+  <!-- Metadati: definiscono la codifica dei caratteri e la visualizzazione su mobile -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENI Gas e Luce | Sostenibilità</title>
+
+  <!-- Google Fonts: importiamo due font di design -->
+  <!-- "Playfair Display" → usato per i titoli, elegante e autorevole -->
+  <!-- "DM Sans" → usato per il corpo del testo, moderno e leggibile -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       VARIABILI CSS (Custom Properties)
+       Centralizzano i colori e i valori riutilizzabili.
+       Cambiando un valore qui, cambia su tutto il sito.
+    ============================================================ */
+    :root {
+      --eni-yellow:   #F5C400;   /* Giallo iconico ENI */
+      --eni-dark:     #0D1B2A;   /* Blu/Nero scuro per sfondi */
+      --eni-green:    #2E8B57;   /* Verde sostenibilità */
+      --eni-green-lt: #4CAF78;   /* Verde chiaro per accenti */
+      --eni-gray:     #F4F4F0;   /* Grigio chiarissimo per sfondi sezioni */
+      --text-dark:    #1A1A2E;   /* Colore testo principale */
+      --text-mid:     #4A5568;   /* Colore testo secondario */
+      --white:        #FFFFFF;
+      --radius:       12px;      /* Bordi arrotondati standard */
+      --shadow:       0 8px 32px rgba(0,0,0,0.10); /* Ombra standard */
+      --transition:   0.35s cubic-bezier(.4,0,.2,1); /* Transizione fluida */
+    }
+
+    /* ============================================================
+       RESET & BASE
+       Azzerano i margini/padding di default del browser
+       e impostano le basi tipografiche del sito.
+    ============================================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box; /* Include padding e border nella larghezza */
+    }
+
+    html {
+      scroll-behavior: smooth; /* Scorrimento morbido tra le sezioni */
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-dark);
+      background: var(--white);
+      line-height: 1.7;
+      overflow-x: hidden; /* Nasconde lo scroll orizzontale indesiderato */
+    }
+
+    /* Stile dei titoli principali → Playfair Display per autorevolezza */
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      line-height: 1.25;
+    }
+
+    /* Immagini responsive: non escono mai dal loro contenitore */
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* Link: rimuoviamo la sottolineatura di default */
+    a { text-decoration: none; color: inherit; }
+
+    /* ============================================================
+       HEADER & NAVBAR
+       La barra di navigazione fissa in cima alla pagina.
+       Diventa opaca con ombra dopo lo scroll (gestito da JS).
+    ============================================================ */
+    header {
+      position: fixed;        /* Rimane visibile durante lo scroll */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;          /* Sempre sopra tutti gli altri elementi */
+      padding: 0 2rem;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+
+    /* Classe aggiunta via JavaScript quando l'utente scorre la pagina */
+    header.scrolled {
+      background: rgba(13, 27, 42, 0.97);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px); /* Effetto vetro smerigliato */
+    }
+
+    /* Contenitore interno della navbar: logo a sinistra, menu a destra */
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    /* Logo ENI: testo stilizzato con il classico colore giallo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      background: var(--eni-yellow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      color: var(--eni-dark);
+      letter-spacing: -1px;
+    }
+
+    .logo-text {
+      color: var(--white);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text span {
+      color: var(--eni-yellow); /* "Gas e Luce" in giallo */
+    }
+
+    /* Lista dei link di navigazione */
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent; /* Bordo invisibile (appare al hover) */
+      transition: color var(--transition), border-color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--eni-yellow);
+      border-bottom-color: var(--eni-yellow);
+    }
+
+    /* ============================================================
+       HERO SECTION
+       Grande immagine d'impatto con testo sovrapposto.
+       Usa un gradiente scuro sopra la foto per rendere il testo leggibile.
+    ============================================================ */
+    #hero {
+      position: relative;
+      min-height: 100vh;           /* Occupa tutta l'altezza della finestra */
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Immagine di sfondo della hero */
+    .hero-bg {
+      position: absolute;
+      inset: 0; /* Equivalente a top/right/bottom/left: 0 */
+      background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      /* Leggera animazione di zoom all'avvio */
+      animation: heroZoom 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1); }
+      to   { transform: scale(1.06); }
+    }
+
+    /* Gradiente scuro sovrapposto all'immagine → testo leggibile */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(13,27,42,0.88) 0%,
+        rgba(13,27,42,0.60) 50%,
+        rgba(46,139,87,0.40) 100%
+      );
+    }
+
+    /* Contenuto testuale della hero (sopra l'overlay) */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Etichetta piccola sopra il titolo principale */
+    .hero-tag {
+      display: inline-block;
+      background: var(--eni-yellow);
+      color: var(--eni-dark);
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5.5rem); /* Dimensione fluida con clamp */
+      color: var(--white);
+      max-width: 750px;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+
+    .hero-title em {
+      color: var(--eni-yellow);
+      font-style: normal;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.82);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    /* Bottoni CTA (Call To Action) nella hero */
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Bottone primario → giallo pieno */
+    .btn-primary {
+      background: var(--eni-yellow);
+      color: var(--eni-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 14px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px); /* Si alza leggermente al passaggio del mouse */
+      box-shadow: 0 12px 30px rgba(245,196,0,0.45);
+    }
+
+    /* Bottone secondario → bordo bianco trasparente */
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 32px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--white);
+    }
+
+    /* Freccia animata in basso → invita a scrollare */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    .scroll-arrow {
+      width: 24px;
+      height: 24px;
+      border-right: 2px solid rgba(255,255,255,0.6);
+      border-bottom: 2px solid rgba(255,255,255,0.6);
+      transform: rotate(45deg);
+      animation: bounce 1.6s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+
+    /* ============================================================
+       UTILITY CLASSES
+       Classi generiche riusabili in tutto il sito.
+    ============================================================ */
+
+    /* Contenitore centrato con larghezza massima */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Intestazione di sezione riutilizzabile */
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--eni-green);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Divisore decorativo colorato sotto i titoli */
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--eni-yellow), var(--eni-green));
+      border-radius: 4px;
+      margin: 1.2rem auto 1.5rem;
+    }
+
+    /* ============================================================
+       PILLARS SECTION
+       I tre pilastri della sostenibilità (Ambiente, Sociale, Governance).
+       Griglia a 3 colonne con card animate.
+    ============================================================ */
+    #pillars {
+      padding: 6rem 0;
+      background: var(--eni-gray);
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 colonne uguali */
+      gap: 2rem;
+    }
+
+    /* Card singola pilastro */
+    .pillar-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Striscia colorata in cima a ogni card */
+    .pillar-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--card-accent, var(--eni-green));
+    }
+
+    .pillar-card:hover {
+      transform: translateY(-8px); /* Effetto "sollevamento" al hover */
+      box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+    }
+
+    /* Icona grande al centro della card */
+    .pillar-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--icon-bg, #e8f5e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+    }
+
+    .pillar-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+      color: var(--text-dark);
+    }
+
+    .pillar-card p {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.75;
+    }
+
+    /* ============================================================
+       ATTIVITÀ SECTION
+       Mostra le attività concrete di sostenibilità.
+       Layout alternato: testo a sinistra/destra, immagine dall'altra parte.
+    ============================================================ */
+    #attivita {
+      padding: 6rem 0;
+      background: var(--white);
+    }
+
+    /* Ogni "riga attività" → due colonne affiancate */
+    .activity-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Due colonne uguali */
+      gap: 4rem;
+      align-items: center;
+      margin-bottom: 6rem;
+    }
+
+    /* Le righe pari invertono l'ordine (immagine prima, testo dopo) */
+    .activity-row.reverse {
+      direction: rtl; /* Trick per invertire l'ordine senza cambiare HTML */
+    }
+
+    .activity-row.reverse > * {
+      direction: ltr; /* Ripristina direzione testo normale per i figli */
+    }
+
+    /* Contenuto testuale di ogni attività */
+    .activity-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Etichetta colorata sopra il titolo dell'attività */
+    .activity-tag {
+      display: inline-block;
+      background: rgba(46,139,87,0.12);
+      color: var(--eni-green);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 50px;
+      width: fit-content;
+    }
+
+    .activity-text h3 {
+      font-size: 1.7rem;
+      color: var(--text-dark);
+    }
+
+    .activity-text p {
+      color: var(--text-mid);
+      line-height: 1.8;
+    }
+
+    /* Lista di punti elenco personalizzati */
+    .activity-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .activity-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text-mid);
+      font-size: 0.95rem;
+    }
+
+    /* Pallino verde prima di ogni voce */
+    .activity-list li::before {
+      content: '✓';
+      min-width: 22px;
+      height: 22px;
+      background: var(--eni-green);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Immagine dell'attività con angolo decorativo */
+    .activity-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .activity-image img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover; /* Ritaglia l'immagine mantenendo le proporzioni */
+      transition: transform 0.6s ease;
+    }
+
+    .activity-image:hover img {
+      transform: scale(1.04); /* Zoom morbido all'hover */
+    }
+
+    /* Badge colorato sull'immagine (es. "−40% CO₂") */
+    .image-badge {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 1.2rem;
+      background: var(--eni-yellow);
+      color: var(--eni-dark);
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ============================================================
+       NUMERI SECTION
+       Statistiche chiave con counter animati.
+       Sfondo scuro con numeri grandi e dorati.
+    ============================================================ */
+    #numeri {
+      padding: 5rem 0;
+      background: var(--eni-dark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Pattern decorativo di sfondo (cerchi) */
+    #numeri::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      border: 60px solid rgba(245,196,0,0.07);
+    }
+
+    #numeri::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 80px solid rgba(46,139,87,0.07);
+    }
+
+    .numeri-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4 colonne */
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Singolo elemento statistico */
+    .stat-item {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Numero grande giallo */
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--eni-yellow);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Unità di misura accanto al numero */
+    .stat-unit {
+      font-size: 1.8rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Separatore verticale tra le statistiche */
+    .stat-item:not(:last-child) {
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ============================================================
+       REPORT SECTION
+       Griglia di card per il download dei report PDF.
+    ============================================================ */
+    #report {
+      padding: 6rem 0;
+      background: var(--eni-gray);
+    }
+
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    /* Card singolo report */
+    .report-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+    }
+
+    /* Parte superiore colorata della card */
+    .report-card-header {
+      background: linear-gradient(135deg, var(--eni-dark) 0%, #1a3a5c 100%);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decoro circolare nello sfondo dell'header */
+    .report-card-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(245,196,0,0.12);
+    }
+
+    /* Icona PDF nella card */
+    .report-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--eni-yellow);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      z-index: 1;
+    }
+
+    .report-year {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 1px;
+    }
+
+    .report-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--white);
+      z-index: 1;
+    }
+
+    /* Corpo della card report */
+    .report-card-body {
+      padding: 1.5rem 2rem 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .report-desc {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    /* Metadati del file (dimensione, pagine) */
+    .report-meta {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .meta-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--text-mid);
+      background: var(--eni-gray);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* Bottone di download → verde per rimandare alla sostenibilità */
+    .btn-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--eni-green);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      text-align: center;
+    }
+
+    .btn-download:hover {
+      background: #236b43;
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       FOOTER
+       Piè di pagina con logo, link e copyright.
+    ============================================================ */
+    footer {
+      background: var(--eni-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand .logo-text {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .footer-brand p {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      max-width: 280px;
+    }
+
+    .footer-col h4 {
+      color: var(--white);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-col a {
+      font-size: 0.88rem;
+      transition: color var(--transition);
+    }
+
+    .footer-col a:hover {
+      color: var(--eni-yellow);
+    }
+
+    /* Linea divisoria e copyright in basso */
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .footer-badges {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    /* Badge certificazioni */
+    .badge {
+      padding: 5px 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* ============================================================
+       RESPONSIVE (MOBILE)
+       Adattamenti per schermi con larghezza < 768px.
+       Le griglie diventano a colonna singola.
+    ============================================================ */
+    @media (max-width: 768px) {
+      /* La navbar nasconde i link (per semplicità; in produzione si userebbe un menu hamburger) */
+      .nav-links { display: none; }
+
+      /* Le griglie diventano colonne singole su mobile */
+      .pillars-grid,
+      .numeri-grid,
+      .reports-grid { grid-template-columns: 1fr; }
+
+      /* Le righe attività diventano verticali */
+      .activity-row,
+      .activity-row.reverse { grid-template-columns: 1fr; direction: ltr; }
+
+      /* Il footer va in colonna singola */
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+      /* I numeri non hanno più separatori laterali su mobile */
+      .stat-item:not(:last-child) { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+
+    /* ============================================================
+       ANIMAZIONI DI ENTRATA (Scroll-reveal)
+       Gli elementi appaiono dal basso con un fade quando entrano
+       nel viewport. La classe .visible viene aggiunta via JS.
+    ============================================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Ritardi scaglionati per animare card in sequenza */
+    .fade-in:nth-child(1) { transition-delay: 0.1s; }
+    .fade-in:nth-child(2) { transition-delay: 0.2s; }
+    .fade-in:nth-child(3) { transition-delay: 0.3s; }
+    .fade-in:nth-child(4) { transition-delay: 0.4s; }
+
+  </style>
 </head>
+
 <body>
-<header class="page-header">
-<h1>Sostenibilità ENI</h1>
-<p>Le principali attività messe in campo da ENI per la transizione energetica, la tutela dell’ambiente e lo sviluppo sociale, insieme ai report ufficiali di sostenibilità.</p>
-</header>
+
+  <!-- ============================================================
+       HEADER / NAVBAR
+       Barra di navigazione fissa in cima alla pagina.
+       I link rimandano alle ancore (sezioni) della stessa pagina.
+  ============================================================ -->
+  <header id="main-header">
+    <nav>
+      <!-- Logo: pallino giallo + nome azienda -->
+      <div class="logo">
+        <div class="logo-badge">ENI</div>
+        <span class="logo-text">Gas e <span>Luce</span></span>
+      </div>
+
+      <!-- Menu di navigazione con ancore alle sezioni -->
+      <ul class="nav-links">
+        <li><a href="#pillars">Pilastri</a></li>
+        <li><a href="#attivita">Attività</a></li>
+        <li><a href="#numeri">Numeri</a></li>
+        <li><a href="#report">Report</a></li>
+      </ul>
+    </nav>
+  </header>
 
 
-<!-- ================= ATTIVITÀ DI SOSTENIBILITÀ ================= -->
-<section class="activities">
-<h2>Le attività di sostenibilità di ENI</h2>
+  <!-- ============================================================
+       HERO SECTION
+       Prima schermata visibile: immagine di sfondo, titolo,
+       sottotitolo e due bottoni di azione.
+  ============================================================ -->
+  <section id="hero">
+    <!-- Immagine di sfondo (pannelli solari al tramonto) -->
+    <div class="hero-bg"></div>
+
+    <!-- Gradiente scuro sovrapposto per leggibilità del testo -->
+    <div class="hero-overlay"></div>
+
+    <!-- Contenuto testuale -->
+    <div class="hero-content container">
+      <!-- Etichetta piccola sopra il titolo -->
+      <span class="hero-tag">🌿 Sostenibilità 2024</span>
+
+      <!-- Titolo principale: parola chiave in giallo ENI -->
+      <h1 class="hero-title">
+        Il futuro è <em>sostenibile</em>,<br>costruiamolo insieme
+      </h1>
+
+      <!-- Sottotitolo descrittivo -->
+      <p class="hero-subtitle">
+        ENI Gas e Luce si impegna ogni giorno per un'energia più pulita,
+        una società più equa e un futuro che rispetti il pianeta.
+      </p>
+
+      <!-- Due bottoni: scopri di più e scarica il report -->
+      <div class="hero-cta">
+        <a href="#attivita" class="btn-primary">
+          ↓ Scopri le attività
+        </a>
+        <a href="#report" class="btn-outline">
+          📄 Report di sostenibilità
+        </a>
+      </div>
+    </div>
+
+    <!-- Indicatore di scroll animato -->
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
 
 
-<article class="activity">
-<h3>Decarbonizzazione e neutralità climatica</h3>
-<p>ENI ha definito un percorso verso la neutralità carbonica entro il 2050, intervenendo sull’intera catena del valore. Le azioni includono la riduzione delle emissioni operative, lo sviluppo di progetti di cattura e stoccaggio della CO₂ (CCS) e l’uso crescente di energie rinnovabili.</p>
-</article>
+  <!-- ============================================================
+       PILLARS SECTION
+       I tre pilastri ESG (Environmental, Social, Governance)
+       su cui si fonda la strategia di sostenibilità ENI.
+  ============================================================ -->
+  <section id="pillars">
+    <div class="container">
+
+      <!-- Intestazione della sezione -->
+      <div class="section-header fade-in">
+        <span class="section-tag">🏛️ I Fondamenti</span>
+        <h2 class="section-title">I tre pilastri ESG di ENI</h2>
+        <div class="divider"></div>
+        <p class="section-desc">
+          La nostra strategia di sostenibilità si articola attorno a tre
+          dimensioni fondamentali: ambiente, sociale e governance.
+        </p>
+      </div>
+
+      <!-- Griglia a 3 colonne con le card dei pilastri -->
+      <div class="pillars-grid">
+
+        <!-- CARD 1: Ambiente -->
+        <div class="pillar-card fade-in" style="--card-accent: #2E8B57; --icon-bg: #e8f5e9;">
+          <div class="pillar-icon">🌍</div>
+          <h3>Ambiente</h3>
+          <p>
+            Riduciamo le emissioni di CO₂ investendo in energie rinnovabili,
+            efficienza energetica e soluzioni per la decarbonizzazione. 
+            Il nostro obiettivo è la carbon neutrality entro il 2050.
+          </p>
+        </div>
+
+        <!-- CARD 2: Sociale -->
+        <div class="pillar-card fade-in" style="--card-accent: #F5C400; --icon-bg: #fff8e1;">
+          <div class="pillar-icon">🤝</div>
+          <h3>Sociale</h3>
+          <p>
+            Sosteniamo le comunità locali, garantiamo condizioni di lavoro
+            sicure e dignitose, e promuoviamo la diversità e l'inclusione
+            in tutti i nostri ambienti di lavoro.
+          </p>
+        </div>
+
+        <!-- CARD 3: Governance -->
+        <div class="pillar-card fade-in" style="--card-accent: #1a3a5c; --icon-bg: #e3f2fd;">
+          <div class="pillar-icon">⚖️</div>
+          <h3>Governance</h3>
+          <p>
+            Operiamo con trasparenza e integrità, rispettando le normative
+            vigenti, adottando modelli di business etici e rendicontando
+            in modo chiaro i nostri progressi e risultati.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
 
-<article class="activity">
-<h3>Sviluppo delle energie rinnovabili</h3>
-<p>Attraverso ENI Plenitude, il gruppo investe in impianti solari ed eolici in Italia e all’estero, promuovendo un modello di produzione energetica sostenibile e accessibile per famiglie e imprese.</p>
-</article>
+  <!-- ============================================================
+       ATTIVITÀ SECTION
+       Descrive nel dettaglio le 4 principali attività di sostenibilità.
+       Layout alternato: immagine sinistra/destra con testo.
+  ============================================================ -->
+  <section id="attivita">
+    <div class="container">
+
+      <!-- Intestazione -->
+      <div class="section-header fade-in">
+        <span class="section-tag">⚡ Le nostre azioni</span>
+        <h2 class="section-title">Attività concrete per il pianeta</h2>
+        <div class="divider"></div>
+        <p class="section-desc">
+          Non solo obiettivi: ecco i programmi reali che ENI Gas e Luce 
+          sta attuando per un futuro più sostenibile.
+        </p>
+      </div>
+
+      <!-- ---- ATTIVITÀ 1: Energie Rinnovabili ---- -->
+      <!-- Layout normale: testo a sinistra, immagine a destra -->
+      <div class="activity-row fade-in">
+
+        <!-- Blocco testo -->
+        <div class="activity-text">
+          <span class="activity-tag">☀️ Energia verde</span>
+          <h3>Transizione verso le energie rinnovabili</h3>
+          <p>
+            ENI Gas e Luce ha avviato un massiccio piano di investimenti nelle fonti di energia
+            rinnovabile, includendo parchi eolici, impianti fotovoltaici e soluzioni di
+            stoccaggio dell'energia. L'obiettivo è fornire ai clienti un mix energetico sempre 
+            più verde e competitivo.
+          </p>
+          <!-- Lista punti con spunte verdi -->
+          <ul class="activity-list">
+            <li>Oltre 3 GW di capacità rinnovabile installata in Italia ed Europa</li>
+            <li>Offerte di energia elettrica 100% da fonti rinnovabili certificate (GO)</li>
+            <li>Partnership con produttori locali di energia solare e eolica</li>
+            <li>Programmi di comunità energetiche rinnovabili (CER) per famiglie e PMI</li>
+          </ul>
+        </div>
+
+        <!-- Blocco immagine con badge decorativo -->
+        <div class="activity-image">
+          <!-- Immagine pannelli solari (da Unsplash, libera da copyright) -->
+          <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80" 
+               alt="Parco solare fotovoltaico ENI" 
+               loading="lazy" />
+          <!-- Badge sull'immagine con il dato chiave -->
+          <span class="image-badge">☀️ 3+ GW installati</span>
+        </div>
+
+      </div>
+
+      <!-- ---- ATTIVITÀ 2: Efficienza Energetica ---- -->
+      <!-- Layout invertito: immagine a sinistra, testo a destra -->
+      <div class="activity-row reverse fade-in">
+
+        <div class="activity-text">
+          <span class="activity-tag">🏠 Efficienza</span>
+          <h3>Efficienza energetica per famiglie e imprese</h3>
+          <p>
+            Attraverso prodotti innovativi come le caldaie ad alta efficienza, i sistemi
+            di domotica e i servizi di diagnosi energetica, ENI Gas e Luce aiuta i propri
+            clienti a ridurre i consumi e le bollette, abbassando anche le emissioni domestiche.
+          </p>
+          <ul class="activity-list">
+            <li>Offerta di pompe di calore e sistemi ibridi gas+elettrico</li>
+            <li>App per il monitoraggio in tempo reale dei consumi energetici</li>
+            <li>Gestione dei pratiche per il Superbonus e gli Eco-incentivi fiscali</li>
+            <li>Diagnosi energetica gratuita per i clienti business</li>
+          </ul>
+        </div>
+
+        <div class="activity-image">
+          <!-- Immagine smart home / edificio efficiente -->
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" 
+               alt="Smart home ed efficienza energetica" 
+               loading="lazy" />
+          <span class="image-badge">💡 −30% sui consumi</span>
+        </div>
+
+      </div>
+
+      <!-- ---- ATTIVITÀ 3: Mobilità Elettrica ---- -->
+      <div class="activity-row fade-in">
+
+        <div class="activity-text">
+          <span class="activity-tag">🚗 e-Mobility</span>
+          <h3>Infrastrutture per la mobilità elettrica</h3>
+          <p>
+            ENI Gas e Luce è attiva nel settore della mobilità sostenibile, installando 
+            colonnine di ricarica rapida e ultra-rapida per veicoli elettrici, sia nelle
+            abitazioni private che nelle aree pubbliche e nelle stazioni di servizio Agip.
+          </p>
+          <ul class="activity-list">
+            <li>Rete di oltre 14.000 punti di ricarica attivi in tutta Italia</li>
+            <li>Colonnine HPC (High Power Charging) da 150–350 kW sulle autostrade</li>
+            <li>Soluzioni wallbox domestiche con installazione inclusa</li>
+            <li>App Be Charge per trovare e pagare la ricarica in modo semplice</li>
+          </ul>
+        </div>
+
+        <div class="activity-image">
+          <!-- Immagine ricarica auto elettrica -->
+          <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80" 
+               alt="Colonnina di ricarica per veicoli elettrici" 
+               loading="lazy" />
+          <span class="image-badge">⚡ 14.000+ punti ricarica</span>
+        </div>
+
+      </div>
+
+      <!-- ---- ATTIVITÀ 4: Compensazione CO₂ ---- -->
+      <div class="activity-row reverse fade-in">
+
+        <div class="activity-text">
+          <span class="activity-tag">🌳 Compensazione</span>
+          <h3>Programmi di compensazione delle emissioni CO₂</h3>
+          <p>
+            Per le emissioni che non possono ancora essere eliminate, ENI Gas e Luce ha
+            avviato programmi di carbon offset certificati, inclusa la piantumazione di
+            foreste in Italia e all'estero e il supporto a progetti di preservazione
+            degli ecosistemi naturali.
+          </p>
+          <ul class="activity-list">
+            <li>Offerta "GasFutura": compensazione del 100% delle emissioni di gas</li>
+            <li>Piantumazione di oltre 1 milione di alberi entro il 2025</li>
+            <li>Certificati di offset internazionali (Gold Standard, VCS)</li>
+            <li>Partnership con WWF Italia per la tutela delle foreste italiane</li>
+          </ul>
+        </div>
+
+        <div class="activity-image">
+          <!-- Immagine foresta / natura -->
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" 
+               alt="Foresta e programma di riforestazione" 
+               loading="lazy" />
+          <span class="image-badge">🌳 1M+ alberi piantati</span>
+        </div>
+
+      </div>
+
+    </div><!-- fine container -->
+  </section>
 
 
-<article class="activity">
-<h3>Economia circolare e bioraffinerie</h3>
-<p>ENI riconverte raffinerie tradizionali in bioraffinerie e sviluppa soluzioni di economia circolare, utilizzando materie prime rinnovabili e rifiuti per la produzione di biocarburanti a basse emissioni.</p>
-</article>
+  <!-- ============================================================
+       NUMERI SECTION
+       Statistiche chiave animate. I numeri si "contano" automaticamente
+       quando la sezione entra nel viewport (gestito da JavaScript).
+  ============================================================ -->
+  <section id="numeri">
+    <div class="container">
+      <div class="numeri-grid">
+
+        <!-- Ogni stat-item ha: data-target (valore finale) e data-suffix (unità) -->
+
+        <div class="stat-item fade-in">
+          <!-- Il numero viene animato via JS fino al valore target -->
+          <span class="stat-number" data-target="40" data-suffix="%">0%</span>
+          <span class="stat-label">Riduzione emissioni di CO₂ entro 2030</span>
+        </div>
+
+        <div class="stat-item fade-in">
+          <span class="stat-number" data-target="3" data-suffix=" GW">0</span>
+          <span class="stat-label">Capacità rinnovabile installata</span>
+        </div>
+
+        <div class="stat-item fade-in">
+          <span class="stat-number" data-target="14" data-suffix="K+">0</span>
+          <span class="stat-label">Punti di ricarica EV attivi</span>
+        </div>
+
+        <div class="stat-item fade-in">
+          <span class="stat-number" data-target="1" data-suffix="M">0</span>
+          <span class="stat-label">Alberi piantati nel mondo</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
 
-<article class="activity">
-<h3>Tutela della biodiversità e degli ecosistemi</h3>
-<p>L’azienda realizza programmi di monitoraggio ambientale e protezione della biodiversità, in collaborazione con università ed enti di ricerca, con particolare attenzione agli ecosistemi marini e terrestri.</p>
-</article>
+  <!-- ============================================================
+       REPORT SECTION
+       Sezione per il download dei report di sostenibilità annuali.
+       Ogni card mostra anno, descrizione e bottone di download.
+       NOTA: i link href="#" sono segnaposto — in produzione si
+       sostituiscono con i veri URL ai file PDF.
+  ============================================================ -->
+  <section id="report">
+    <div class="container">
+
+      <!-- Intestazione -->
+      <div class="section-header fade-in">
+        <span class="section-tag">📊 Trasparenza</span>
+        <h2 class="section-title">Report di Sostenibilità</h2>
+        <div class="divider"></div>
+        <p class="section-desc">
+          Ogni anno pubblichiamo un rendiconto completo delle nostre 
+          performance ambientali, sociali e di governance. Scaricali liberamente.
+        </p>
+      </div>
+
+      <!-- Griglia a 3 colonne con le card dei report -->
+      <div class="reports-grid">
+
+        <!-- ---- Report 2023 (più recente) ---- -->
+        <div class="report-card fade-in">
+          <div class="report-card-header">
+            <div class="report-icon">📄</div>
+            <span class="report-year">ANNO 2023</span>
+            <h3 class="report-title">Report di Sostenibilità 2023</h3>
+          </div>
+          <div class="report-card-body">
+            <p class="report-desc">
+              Il rapporto annuale più recente: obiettivi raggiunti nel 2023,
+              progressi sulla roadmap net-zero, performance ESG e piani 
+              per il triennio 2024–2026.
+            </p>
+            <!-- Metadati del file -->
+            <div class="report-meta">
+              <span class="meta-tag">📁 PDF · 8.2 MB</span>
+              <span class="meta-tag">📑 142 pagine</span>
+            </div>
+            <!-- 
+              Bottone di download.
+              href="#" va sostituito con il percorso reale del file PDF.
+              download="nome-file.pdf" forza il download anziché aprire nel browser.
+            -->
+            <a href="#" class="btn-download" download="ENI-Gas-Luce-Report-Sostenibilita-2023.pdf">
+              ⬇ Scarica il Report 2023
+            </a>
+          </div>
+        </div>
+
+        <!-- ---- Report 2022 ---- -->
+        <div class="report-card fade-in">
+          <div class="report-card-header">
+            <div class="report-icon">📄</div>
+            <span class="report-year">ANNO 2022</span>
+            <h3 class="report-title">Report di Sostenibilità 2022</h3>
+          </div>
+          <div class="report-card-body">
+            <p class="report-desc">
+              L'edizione 2022 include i risultati della campagna di 
+              efficienza energetica, l'espansione della rete di ricarica
+              e gli impegni presi nell'ambito della COP27.
+            </p>
+            <div class="report-meta">
+              <span class="meta-tag">📁 PDF · 7.5 MB</span>
+              <span class="meta-tag">📑 128 pagine</span>
+            </div>
+            <a href="#" class="btn-download" download="ENI-Gas-Luce-Report-Sostenibilita-2022.pdf">
+              ⬇ Scarica il Report 2022
+            </a>
+          </div>
+        </div>
+
+        <!-- ---- Report 2021 ---- -->
+        <div class="report-card fade-in">
+          <div class="report-card-header">
+            <div class="report-icon">📄</div>
+            <span class="report-year">ANNO 2021</span>
+            <h3 class="report-title">Report di Sostenibilità 2021</h3>
+          </div>
+          <div class="report-card-body">
+            <p class="report-desc">
+              Il primo anno post-pandemia: resilienza del business, 
+              accelerazione del piano rinnovabili e lancio delle prime 
+              offerte di energia 100% verde per le famiglie italiane.
+            </p>
+            <div class="report-meta">
+              <span class="meta-tag">📁 PDF · 6.9 MB</span>
+              <span class="meta-tag">📑 115 pagine</span>
+            </div>
+            <a href="#" class="btn-download" download="ENI-Gas-Luce-Report-Sostenibilita-2021.pdf">
+              ⬇ Scarica il Report 2021
+            </a>
+          </div>
+        </div>
+
+      </div><!-- fine reports-grid -->
+    </div>
+  </section>
 
 
-<article class="activity">
-<h3>Sicurezza, persone e comunità</h3>
-<p>ENI promuove la sicurezza sul lavoro, la formazione continua e il benessere dei dipendenti. Parallelamente sostiene progetti di sviluppo locale, istruzione, sanità e accesso all’energia nelle comunità in cui opera.</p>
-</article>
-</section>
+  <!-- ============================================================
+       FOOTER
+       Piè di pagina con logo, colonne di link e copyright.
+  ============================================================ -->
+  <footer>
+    <div class="container">
+
+      <!-- Griglia footer: 4 colonne (brand + 3 categorie link) -->
+      <div class="footer-grid">
+
+        <!-- Colonna brand: logo e descrizione breve -->
+        <div class="footer-brand">
+          <div class="logo" style="margin-bottom:1rem;">
+            <div class="logo-badge">ENI</div>
+            <span class="logo-text">Gas e <span>Luce</span></span>
+          </div>
+          <p>
+            ENI Gas e Luce è la business unit di ENI dedicata alla fornitura
+            di energia elettrica e gas per famiglie, imprese e Pubblica Amministrazione.
+          </p>
+        </div>
+
+        <!-- Colonna link: Sostenibilità -->
+        <div class="footer-col">
+          <h4>Sostenibilità</h4>
+          <ul>
+            <li><a href="#pillars">Pilastri ESG</a></li>
+            <li><a href="#attivita">Le nostre azioni</a></li>
+            <li><a href="#numeri">I nostri numeri</a></li>
+            <li><a href="#report">Report annuali</a></li>
+          </ul>
+        </div>
+
+        <!-- Colonna link: Prodotti -->
+        <div class="footer-col">
+          <h4>Prodotti</h4>
+          <ul>
+            <li><a href="#">Energia Verde</a></li>
+            <li><a href="#">Ricarica Elettrica</a></li>
+            <li><a href="#">Gas Naturale</a></li>
+            <li><a href="#">Efficienza Casa</a></li>
+          </ul>
+        </div>
+
+        <!-- Colonna link: Contatti -->
+        <div class="footer-col">
+          <h4>Contatti</h4>
+          <ul>
+            <li><a href="#">Servizio Clienti</a></li>
+            <li><a href="#">Aree Comuni</a></li>
+            <li><a href="#">Stampa & Media</a></li>
+            <li><a href="#">Investor Relations</a></li>
+          </ul>
+        </div>
+
+      </div><!-- fine footer-grid -->
+
+      <!-- Linea di copyright -->
+      <div class="footer-bottom">
+        <span>© 2024 ENI Gas e Luce S.p.A. — Tutti i diritti riservati</span>
+        <div class="footer-badges">
+          <!-- Badge certificazioni ambientali -->
+          <span class="badge">ISO 14001</span>
+          <span class="badge">GRI Standards</span>
+          <span class="badge">UN SDGs</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
 
 
-<!-- ================= REPORT UFFICIALI ================= -->
-<section class="reports-section">
-<h2>Report di sostenibilità ENI</h2>
+  <!-- ============================================================
+       JAVASCRIPT
+       Tre funzionalità principali:
+       1. Navbar: diventa opaca quando si scrolla
+       2. Scroll-reveal: gli elementi appaiono con fade-in al scroll
+       3. Counter animato: i numeri si "contano" quando visibili
+  ============================================================ -->
+  <script>
+    // ---- 1. NAVBAR SCROLL ----
+    // Aggiunge la classe "scrolled" all'header quando si scorre oltre 50px.
+    // Il CSS si occupa del cambio di stile (sfondo, ombra).
+    const header = document.getElementById('main-header');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
 
 
-<div class="report">
-<h3>Relazione Finanziaria Annuale e Rendicontazione di Sostenibilità 2024</h3>
-<p>
-<a href="https://report.eni.com/annual-report-2024/it/_assets/downloads/sustainability-eni-ba24.pdf" target="_blank" rel="noopener">Scarica il PDF 2024</a>
-</p>
-</div>
-<footer>
-<p>Fonte: documentazione ufficiale ENI – area sostenibilità.</p>
-</footer>
+    // ---- 2. SCROLL-REVEAL (Intersection Observer) ----
+    // Osserva tutti gli elementi con classe "fade-in".
+    // Quando un elemento entra nel viewport, aggiunge la classe "visible"
+    // che attiva la transizione CSS (opacity + translateY).
+
+    const fadeEls = document.querySelectorAll('.fade-in');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {       // Elemento visibile nel viewport?
+          entry.target.classList.add('visible'); // Aggiunge la classe
+          revealObserver.unobserve(entry.target); // Smette di osservarlo (ottimizzazione)
+        }
+      });
+    }, {
+      threshold: 0.15,    // Scatta quando il 15% dell'elemento è visibile
+      rootMargin: '0px'
+    });
+
+    fadeEls.forEach(el => revealObserver.observe(el));
+
+
+    // ---- 3. COUNTER ANIMATI ----
+    // Seleziona tutti gli elementi con data-target.
+    // Quando entrano nel viewport, anima il numero da 0 al valore target.
+
+    const counters = document.querySelectorAll('[data-target]');
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return; // Esci se non visibile
+
+        const el = entry.target;
+        const target   = parseFloat(el.dataset.target); // Valore finale (es. 40)
+        const suffix   = el.dataset.suffix || '';        // Unità (es. "%", " GW")
+        const duration = 2000; // Durata animazione in ms
+        const steps    = 60;   // Numero di passi (frame)
+        const increment = target / steps;
+        let current = 0;
+
+        // Funzione che aggiorna il numero ad ogni "passo"
+        const update = () => {
+          current += increment;
+          if (current >= target) {
+            // Raggiunto il target: mostra il valore esatto e smette
+            el.textContent = target + suffix;
+            counterObserver.unobserve(el); // Non osservare più
+          } else {
+            // Aggiorna il testo con il valore corrente (arrotondato)
+            el.textContent = Math.floor(current) + suffix;
+            setTimeout(update, duration / steps); // Chiama il prossimo step
+          }
+        };
+
+        update(); // Avvia l'animazione
+      });
+    }, { threshold: 0.5 }); // Scatta quando il 50% è visibile
+
+    counters.forEach(c => counterObserver.observe(c));
+  </script>
+
 </body>
 </html>
-
-
-
-
-
